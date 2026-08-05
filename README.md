@@ -8,32 +8,41 @@ protocol as the backend — no backend changes needed.
 ## Important — read this first
 
 **I could not compile or run this app.** This sandbox has no Kotlin compiler,
-no Android SDK, and no Gradle. Every file is written carefully and mirrors
-the tested web app's logic (and the iOS Swift port) line-for-line where
-possible, but the first real build will happen on your machine, not mine.
-Expect to fix a handful of small issues on first build — that's normal, but
-"written" and "verified" are not the same thing here.
+no Android SDK, and no full Java runtime for Gradle to build against. Every
+file is written carefully and mirrors the tested web app's logic (and the
+iOS Swift port) line-for-line where possible, but the first real build will
+happen on your machine, not mine. Expect to fix a handful of small issues on
+first build — that's normal, but "written" and "verified" are not the same
+thing here.
 
-There's also no Gradle wrapper jar in this zip (I can't download the Gradle
-distribution binary from this sandbox). Opening the project in Android
-Studio will prompt it to generate the wrapper automatically — just accept
-that prompt on first open.
+The Gradle wrapper itself (`gradlew`, `gradlew.bat`, and
+`gradle/wrapper/gradle-wrapper.jar`) **is real and verified** — pinned to
+Gradle 8.7, fetched directly from Gradle's own official repository. I ran
+`./gradlew --version` in this sandbox and confirmed it correctly bootstraps
+and attempts to download the real Gradle 8.7 distribution from
+`services.gradle.org`; the only reason it didn't complete here is that this
+sandbox's network allowlist blocks that specific host (confirmed via the
+`x-deny-reason: host_not_allowed` response header) — not a problem you'll
+hit on a normal machine with normal internet access. On your machine,
+`./gradlew` will download Gradle once, cache it, and proceed to build.
 
 ## Requirements
 
-- Android Studio (Ladybug or newer recommended)
+- Android Studio (Ladybug or newer recommended) — or just a JDK 17+ and the
+  `gradlew`/`gradlew.bat` in this project, if you want to build from the
+  command line instead
 - An Android device or emulator running API 26+ (Android 8.0+)
 - The backend already deployed (see the backend zip) — you need a real URL
 
 ## Setup
 
-1. Open Android Studio → **Open** → select the `NexgenDriverAndroid` folder.
-2. Let Android Studio sync Gradle and generate the wrapper when prompted.
-3. Edit `app/src/main/java/com/corverxis/nexgendriver/Config.kt`:
+1. Open Android Studio → **Open** → select the `NexgenDriverAndroid` folder,
+   and let it sync — or run `./gradlew build` from a terminal in this folder.
+2. Edit `app/src/main/java/com/corverxis/nexgendriver/Config.kt`:
    ```kotlin
    const val API_BASE = "https://<your-backend>.fly.dev"
    ```
-4. Run on a device or emulator with Google Play Services (needed for the
+3. Run on a device or emulator with Google Play Services (needed for the
    Fused Location Provider).
 
 ## Driver accounts
@@ -149,6 +158,8 @@ actually used for that trip.
 
 ```
 NexgenDriverAndroid/
+├── gradlew / gradlew.bat        # real, verified Gradle wrapper launcher scripts
+├── gradle/wrapper/                # gradle-wrapper.jar (real, pinned to 8.7) + .properties
 ├── settings.gradle.kts
 ├── build.gradle.kts
 └── app/
