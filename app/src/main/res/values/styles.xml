@@ -1,0 +1,6 @@
+<resources>
+    <style name="Theme.NexgenDriver" parent="android:Theme.Material.NoActionBar">
+        <item name="android:statusBarColor">#021830</item>
+        <item name="android:windowBackground">#021830</item>
+    </style>
+</resources>
